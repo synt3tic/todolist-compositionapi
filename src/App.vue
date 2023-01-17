@@ -1,30 +1,65 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <main class="flex flex-col items-center">
+    <task-form @createTask="createTask"/>
+    <task-list 
+      :taskList="taskList" 
+      @changeTaskStatus="changeTaskStatus"
+      @removeTask="removeTask"
+      @editTask="editTask"
+    />
+  </main>
 </template>
 
+<script setup>
+import TaskForm from "@/components/TaskForm.vue"
+import TaskList from "./components/TaskList.vue";
+import { ref } from 'vue'
+
+const taskList = ref([
+  {
+    id: 1,
+    title: "Make Video",
+    description: "Upload on YouTube",
+    status: false,
+  },
+  {
+    id: 2,
+    title: "Make Dinner",
+    description: "Make Dinner and eat",
+    status: false,
+  },
+]);
+const changeTaskStatus = (task) => {
+  taskList.value = taskList.value.map((el) => {
+    if(el.id === task.id) {
+      el.status = !el.status
+      return el
+    } else {
+      return el
+    }
+  })
+};
+const createTask = (task) => {
+  taskList.value.push(task)
+};
+const removeTask = (task) => {
+  taskList.value = taskList.value.filter(el => el.id !== task.id)
+};
+const editTask = (task) => {
+  taskList.value = taskList.value.map((el) => {
+    if(el.id === task.id) {
+      return task
+    } else {
+      return el
+    }
+  })
+};
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+* {
+  font-family: "JetBrains Mono", monospace;
+  margin: 0;
+  padding: 0;
 }
 </style>
