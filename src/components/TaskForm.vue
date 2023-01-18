@@ -1,7 +1,7 @@
 <template>
   <form class="task-form" @submit.prevent>
     <h1 
-      class="cursor-default text-2xl font-bold text-[#134d86]"
+      class="task-form__header"
     >
       Creating a task
     </h1>
@@ -14,13 +14,12 @@
     />
     <textarea 
       v-model="task.description"
-      class="task-form__input task-form__text-area"
+      class="task-form__input task-form__textarea"
       type="text"
       placeholder="Description(no more than 120 letters)"
       maxlength="120"
     />
     <my-button 
-      class="task-form__button"
       :buttonState="buttonState"
       @click="createTask"
     >
@@ -43,6 +42,7 @@ const task = ref({
 
 const createTask = () => {
   emit("createTask", task.value)
+  emit("hideForm")
   task.value = {
     id: Date.now(),
     title: "",
@@ -52,7 +52,7 @@ const createTask = () => {
 };
 
 const buttonState = computed(() => {
-  return task.value.title === "" || task.value.description === "" ? false : true
+  return task.value.title === "" ? false : true
 })
 </script>
 
@@ -61,11 +61,15 @@ const buttonState = computed(() => {
   @apply flex flex-col items-center my-[15px] p-[15px] gap-2.5 rounded-[15px] border border-[2px] border-[#134d86] w-[300px]
 }
 
-.task-form__input {
-  @apply h-6 w-full bg-[#1e8fff07] rounded-[5px] border border-[#134d86] text-lg text-[#134d86] p-1.5 active:outline active:outline-1 active:outline-[#134d86] focus:outline focus:outline-1 focus:outline-[#134d86]
+.task-form__header {
+  @apply cursor-default text-2xl font-bold text-[#134d86]
 }
 
-.task-form__text-area {
-  @apply h-36 resize-none
+.task-form__input {
+  @apply h-6 w-full bg-[#1e8fff07] rounded-[5px] border border-[#134d86] text-lg text-[#134d86] px-2 py-3 active:outline active:outline-1 active:outline-[#134d86] focus:outline focus:outline-1 focus:outline-[#134d86]
+}
+
+.task-form__textarea {
+  @apply h-36 py-0 resize-none
 }
 </style>

@@ -1,41 +1,41 @@
 <template>
   <li :class="taskClasses">
-    <div v-if="editStatus" class="flex flex-col w-full gap-[5px]">
+    <div v-if="isEditingState" class="task__edit-inputs">
       <input 
         v-model="editedTask.title"
-        class="edit-input"
+        class="edit-field edit-field_input"
         type="text"
       />
       <textarea 
         v-model="editedTask.description"
-        class="edit-input h-full w-full p-[6px] resize-none text-base"
+        class="edit-field edit-field_textarea"
         type="text"
       />
     </div>
-    <div v-else :class="taskTextClasses">
+    <div v-if="!isEditingState" :class="taskTextClasses">
       <h3 
-        class="bg-[#134c8659] rounded-[5px] p-1.5 h-9 font-bold text-lg"
+        class="information__title"
       >
         {{ task.title }}
       </h3>
       <p 
-        class="bg-[#54a6e93f] rounded-[5px] p-1.5 h-full"
+        class="information__description"
       >
         {{ task.description }}
       </p>
     </div>
-    <div class="flex flex-col gap-[5px]">
+    <div class="task__buttons">
       <my-button 
         :buttonState="buttonState"
         @click="changeTaskStatus"
       >
-        {{ buttonContent }}
+        {{ taskStatusButtonIcon }}
       </my-button>
       <my-button 
         :buttonState="editButtonState" 
-        @click="changeEditStatus"
+        @click="changeEditingState"
       >
-        {{ editButtonIcon }}
+        {{ editingButtonIcon }}
       </my-button>
       <my-button 
         :buttonState="buttonState" 
@@ -55,62 +55,60 @@ const props = defineProps({
 });
 const emit = defineEmits(["changeTaskStatus", "removeTask", "editTask"])
 
-const buttonContent = computed(() => {
-  let result
-  if(props.task.status) {
-    result = "❎"
-  } else {
-    result = "✅"
-  }
-  return result
+
+const isEditingState = ref(false);
+
+const editedTask = ref({
+  ...props.task
 });
+
+const buttonState = computed(() => {
+  return isEditingState.value ? false : true
+});
+
+const editButtonState = computed(() => {
+  return props.task.status ? false : true
+});
+
 
 const taskClasses = computed(() => {
   return ["task", {
-    "bg-[#c4c4c4]": props.task.status,
+    "task_complited": props.task.status,
   }]
 });
 
 const taskTextClasses = computed(() => {
-  return ["cursor-default flex flex-col gap-[5px] w-full", {
-    "line-through": props.task.status,
+  return ["task__information", {
+    "task__information_complited": props.task.status,
   }]
-})
-    
+});
+
+
+const taskStatusButtonIcon = computed(() => {
+  return props.task.status ? "❎" : "✅"
+});
+
+const editingButtonIcon = computed(() => {
+  return isEditingState.value ? "✔️" : "✏️"
+});
+
+
 const changeTaskStatus = () => {
-  if(!editStatus.value) {
-    emit("changeTaskStatus", props.task)
-  }
+  emit("changeTaskStatus", props.task)
 };
 
 const removeTask = () => {
   emit("removeTask", props.task)
 };
 
-const editStatus = ref(false);
-
-const editedTask = ref({
-  ...props.task
-});
-
-const editButtonIcon = computed(() => editStatus.value ? "✔️" : "✏️")
-
-const changeEditStatus = () => {
-  if(!props.task.status && !editStatus.value) {
-    editStatus.value = true
-  } else if (editStatus.value) {
-    editStatus.value = false
+const changeEditingState = () => {
+  if(!props.task.status && !isEditingState.value) {
+    isEditingState.value = true
+  } else if (isEditingState.value) {
+    isEditingState.value = false
     emit("editTask", editedTask.value)
   }
 };
-
-const buttonState = computed(() => {
-  return editStatus.value ? false : true
-});
-
-const editButtonState = computed(() => {
-  return props.task.status ? false : true
-});
 </script>
 
 <style>
@@ -118,7 +116,50 @@ const editButtonState = computed(() => {
   @apply flex gap-[5px] rounded-[10px] border border-[1px] border-[#134d86] p-[15px] w-[300px]
 }
 
-.edit-input {
-  @apply h-9 p-1.5 rounded-[5px] border border-[#134d86] bg-[#1e8fff07]  text-lg text-[#134d86] active:outline-1 active:outline-[#134d86] focus:outline-1 focus:outline-[#134d86]
+.task_complited {
+  @apply bg-[#c4c4c4]
+}
+
+.task__edit-inputs {
+  @apply flex flex-col w-full gap-[5px]
+}
+
+.edit-field {
+  @apply p-1.5 rounded-[5px] border border-[#134d86] text-lg text-[#134d86] active:outline-1 active:outline-[#134d86] focus:outline-1 focus:outline-[#134d86]
+}
+
+.edit-field_input {
+  @apply p-1.5 h-9 font-bold text-lg
+}
+
+.edit-field_textarea {
+  @apply h-full w-full p-[5px] resize-none text-base
+}
+
+.task__information {
+  @apply cursor-default flex flex-col gap-[5px] w-full
+}
+
+.task__information_complited {
+  @apply line-through
+}
+
+.information__title {
+  @apply bg-[#134c8659] rounded-[5px] p-1.5 h-9 font-bold text-lg
+}
+
+.information__description {
+  @apply bg-[#54a6e93f] rounded-[5px] p-1.5 h-full
+}
+
+.task__buttons {
+  @apply flex flex-col gap-[5px]
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+  opacity: 0;
 }
 </style>

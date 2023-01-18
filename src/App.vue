@@ -1,6 +1,18 @@
 <template>
-  <main class="flex flex-col items-center">
-    <task-form @createTask="createTask"/>
+  <main>
+    <my-button 
+      v-if="!isFormVisible"
+      @click="changeFormVisibilityStatus"
+      :buttonState="true" 
+      class="main__button"
+    >
+      New Task
+    </my-button>
+    <task-form 
+      v-else 
+      @createTask="createTask" 
+      @hideForm="changeFormVisibilityStatus"
+    />
     <task-list 
       :taskList="taskList" 
       @changeTaskStatus="changeTaskStatus"
@@ -29,6 +41,8 @@ const taskList = ref([
     status: false,
   },
 ]);
+const isFormVisible = ref(false)
+
 const changeTaskStatus = (task) => {
   taskList.value = taskList.value.map((el) => {
     if(el.id === task.id) {
@@ -54,6 +68,9 @@ const editTask = (task) => {
     }
   })
 };
+const changeFormVisibilityStatus = () => {
+  isFormVisible.value = !isFormVisible.value
+};
 </script>
 
 <style>
@@ -61,5 +78,13 @@ const editTask = (task) => {
   font-family: "JetBrains Mono", monospace;
   margin: 0;
   padding: 0;
+}
+
+main {
+  @apply flex flex-col items-center pt-3 
+}
+
+.main__button {
+  @apply w-[300px] mb-[15px]
 }
 </style>

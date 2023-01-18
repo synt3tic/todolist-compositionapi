@@ -15,6 +15,6 @@ const props = defineProps({
 
 <style scoped>
 .button {
-  @apply h-9 px-1.5 rounded  duration-200 bg-[#134c8659] hover:bg-[#54a6e93f] disabled:bg-[#eaeff3] disabled:bg-[#a0a0a0] disabled:hover:cursor-default
+  @apply h-9 px-1.5 rounded  duration-200 bg-[#134c8659] hover:bg-[#54a6e93f] disabled:bg-[#b0b4b9] disabled:hover:cursor-default
 }
 </style>

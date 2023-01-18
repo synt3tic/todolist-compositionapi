@@ -1,5 +1,5 @@
 <template>
-  <ul class="flex flex-col mb-[15px] gap-[15px] list-none">
+  <ul class="task-list">
     <task-item 
       v-for="task in taskList" 
       :key="task.id" 
@@ -32,3 +32,9 @@ const editTask = (task) => {
   emit("editTask", task);
 };
 </script>
+
+<style scoped>
+.task-list {
+  @apply flex flex-col mb-[15px] gap-[15px] list-none
+}
+</style>
